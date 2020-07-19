@@ -7,17 +7,13 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import configuration from './config/configuration';
 import {UsersController} from './users/users.controller';
-// import * as path from 'path';
-// import { EnvConfig } from './config/config.service';
 import { UsersModule } from './users/users.module';
-
-// const mongoUrl: string = ConfigService('MONGO_URI');
-
 @Module({
   imports: [
     AuthModule,
+    TypeOrmModule,
     ConfigModule.forRoot({load: [configuration]}),
-    MongooseModule.forRoot('mongodb://hoangtrung17:Tony123@ds263248.mlab.com:63248/heroku_z8vp6mfc'),
+    MongooseModule.forRoot(process.env.MONGO_URI),
     UsersModule],
   controllers: [AppController, UsersController],
   providers: [AppService]
