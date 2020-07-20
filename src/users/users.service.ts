@@ -22,6 +22,10 @@ export class UsersService {
         return this.UserModel.findOne({ name: userName }).exec();
     }
 
+    async findOneById(id: string): Promise<User> {
+        return this.UserModel.findOne({ _id: id }).exec();
+    }
+
     async findOrCreate(_user): Promise<User> {
         const user = await this.UserModel
             .findOne({ 'name': _user.email })
