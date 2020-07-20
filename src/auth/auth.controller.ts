@@ -1,16 +1,18 @@
-import { Controller, Get,Post, UseGuards, Res, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards, Res, Req } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import {LocalAuthGuard } from './local-auth.guard';
+import { LocalAuthGuard } from './local-auth.guard';
+import { AuthUserDto } from './dto/auth-user.dto';
 
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) {}
-  @UseGuards(LocalAuthGuard)
-  @Post('login')
-  async login(@Req() req) {
-    return this.authService.login(req.user);
-  }
+
+    @Post('login')
+    @UseGuards(LocalAuthGuard)
+    login(@Body() authInfo: AuthUserDto) {
+        return this.authService.login(authInfo);
+    }
 
     @Get('google')
     @UseGuards(AuthGuard('google'))
@@ -31,8 +33,7 @@ export class AuthController {
 
     @Get('protected')
     @UseGuards(AuthGuard('jwt'))
-    protectedResource()
-    {
+    protectedResource() {
         return 'JWT is working!';
     }
 }

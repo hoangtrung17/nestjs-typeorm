@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { sign } from 'jsonwebtoken';
+import {AuthUserDto} from './dto/auth-user.dto'
 
 export enum Provider {
   GOOGLE = 'google'
@@ -23,9 +24,8 @@ export class AuthService {
     return null;
   }
 
-  async login(user: any) {
-    console.log("user", user);
-    const payload = { email: user.email, sub: user.pass };
+  async login(userInfo: AuthUserDto) {
+    const payload = { email: userInfo.email, sub: userInfo.pass };
     return {
       access_token: this.jwtService.sign(payload)
     };
