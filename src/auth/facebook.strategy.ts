@@ -18,16 +18,16 @@ export class FacebookStrategy {
             clientSecret: process.env.FACEBOOK_APP_SECRET,
             profileFields: ['id', 'name', 'displayName', 'emails', 'photos']
         }, async (
-                accessToken: string,
-                refreshToken: string,
-                profile: any,
-                done: any,
-            ) => {
-                const user = await this.userService.findOrCreate(
-                    profile
-                )
-                return done(null, user);
-            },
+            accessToken: string,
+            refreshToken: string,
+            profile: any,
+            done: any,
+        ) => {
+            const user = await this.userService.findOrCreate(
+                profile
+            )
+            return done(null, user);
+        },
         ));
     }
 }
