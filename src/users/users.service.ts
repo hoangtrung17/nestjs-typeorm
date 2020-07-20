@@ -24,7 +24,7 @@ export class UsersService {
 
     async findOrCreate(_user): Promise<User> {
         const user = await this.UserModel
-            .findOne({ 'name': _user.name })
+            .findOne({ 'name': _user.email })
             .exec();
         if (user) {
             return user;
@@ -40,6 +40,6 @@ export class UsersService {
         const createdUser = new this.UserModel({
             name: _user.emails[0].value
         });
-        return createdUser.save();
+        return createdUser.save()
     }
 }
