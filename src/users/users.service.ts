@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './users.model';
 import { CreateUserDto } from './dto/create-user.dto';
-
+import { decode, encode } from 'jwt-simple';
 @Injectable()
 export class UsersService {
     constructor(@InjectModel('User') private readonly UserModel: Model<User>) { }
