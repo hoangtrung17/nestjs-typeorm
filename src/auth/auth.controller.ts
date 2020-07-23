@@ -11,7 +11,7 @@ export class AuthController {
     @Post('login')
     @UseGuards(LocalAuthGuard)
     login(@Request() req) {
-        return this.authService.login(req.user._doc);
+        return this.authService.login(req.user);
     }
 
     @Get('google')
