@@ -4,6 +4,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { use } from "passport";
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 @Injectable()
 export class FacebookStrategy {

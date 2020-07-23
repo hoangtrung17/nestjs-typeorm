@@ -11,7 +11,7 @@ export class AuthController {
     @Post('login')
     @UseGuards(LocalAuthGuard)
     login(@Request() req) {
-        return this.authService.login(req.user);
+        return this.authService.login(req.user._doc);
     }
 
     @Get('google')
@@ -21,7 +21,7 @@ export class AuthController {
     }
 
     @Get('google/callback')
-    @UseGuards(AuthGuard('google'))
+    // @UseGuards(AuthGuard('google'))
     googleLoginCallback(@Req() req, @Res() res) {
         // handles the Google OAuth2 callback
         const jwt: string = req.user.jwt;

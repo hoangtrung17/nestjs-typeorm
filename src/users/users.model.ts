@@ -12,6 +12,7 @@ export interface User extends mongoose.Document {
   name: string;
   email: string;
   password: string;
+  facebookId: string;
 }
 
 export default mongoose.model<User>('User', UserSchema);

@@ -3,6 +3,8 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { sign } from 'jsonwebtoken';
 import {AuthUserDto} from './dto/auth-user.dto'
+import {CreateUserDto} from '../users/dto/create-user.dto'
+import { User} from '../users/users.model'
 
 export enum Provider {
   GOOGLE = 'google'
@@ -17,16 +19,22 @@ export class AuthService {
 
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersService.findOne(username);
+  
     if (user && user.password === pass) {
-      const { password, ...result } = user;
-      return result;
+      return {
+        username: user.name,
+        email: user.email
+      };
     }
     return null;
   }
 
-  async login(userInfo: AuthUserDto) {
-    const payload = { username: userInfo.username, sub: userInfo.password };
+  async login(userInfo) {
+    const payload = { username: userInfo.name, sub: userInfo.email };
+    console.log("userInfo", userInfo)
     return {
+      username: userInfo.name,
+      email: userInfo.email,
       access_token: this.jwtService.sign(payload)
     };
   }

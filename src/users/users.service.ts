@@ -9,16 +9,18 @@ import { decode, encode } from 'jwt-simple';
 export class UsersService {
     constructor(@InjectModel('User') private readonly UserModel: Model<User>) { }
 
-    async create(createUserDto: CreateUserDto): Promise<User> {
+    async create(createUserDto: CreateUserDto): Promise<any> {
         const createdUser = new this.UserModel(createUserDto);
-        return createdUser.save();
+        console.log("createdUser", createdUser);
+        return null
+        // return createdUser.save();
     }
 
     async findAll(): Promise<User[]> {
         return this.UserModel.find().exec();
     }
 
-    async findOne(userName: string): Promise<User> {
+    async findOne(userName: string): Promise<any> {
         return this.UserModel.findOne({ email: userName }).exec();
     }
 
