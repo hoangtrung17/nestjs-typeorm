@@ -17,6 +17,11 @@ export class UsersController {
     return this.UsersService.findAll();
   }
 
+  // @Get('getUser')
+  // async findByGG(@Param("id") id: string,@Param("accessToken") accessToken: string): Promise<User[]> {
+  //   return this.UsersService.findByGG();
+  // }
+
   @Get('/:id')
   async findById(@Param("id") id: string): Promise<User> {
     return this.UsersService.findOneById(id);
