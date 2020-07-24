@@ -11,9 +11,7 @@ export class UsersService {
 
     async create(createUserDto: CreateUserDto): Promise<any> {
         const createdUser = new this.UserModel(createUserDto);
-        console.log("createdUser", createdUser);
-        return null
-        // return createdUser.save();
+        return createdUser.save();
     }
 
     async findAll(): Promise<User[]> {
@@ -39,13 +37,6 @@ export class UsersService {
         if (user) {
             return user;
         }
-        //   const createdUser = new this.UserModel({
-        //     email: _user.emails[0].value,
-        //     facebook: {
-        //       id: _user.id,
-        //       avatar: _user.photos[0].value
-        //     }
-        //   });
 
         const createdUser = new this.UserModel({
             name: _user.emails[0].value
