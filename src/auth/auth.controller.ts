@@ -3,12 +3,13 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthUserDto } from './dto/auth-user.dto';
+import { UsersService } from '../users/users.service'
 import * as dotenv from 'dotenv';
 dotenv.config();
 
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService, private readonly UsersService: UsersService) { }
 
     @Post('login')
     @UseGuards(LocalAuthGuard)
@@ -21,17 +22,30 @@ export class AuthController {
     googleLogin() {
         // initiates the Google OAuth2 login flow
     }
-  
+
     @Get('google/callback')
     @UseGuards(AuthGuard('google'))
     googleLoginCallback(@Req() req, @Res() res) {
         // handles the Google OAuth2 callback
-        console.log("user là", req.user);
         const jwt: string = req.user.accessToken;
         const email: string = req.user.email;
-        if (jwt)
+        if (jwt) {
+            this.UsersService.findOrCreate(req.user);
             res.redirect(process.env.CLIENT_PORT + '/login/success?accessToken=' + jwt + '&email=' + email);
+        }
         else
+            res.redirect(process.env.CLIENT_PORT + '/login/failure');
+    }
+
+    @Get('facebook/callback')
+    @UseGuards(AuthGuard('facebook'))
+    facebookLoginCallback(@Req() req, @Res() res) {
+        // handles the Google OAuth2 callback
+        const jwt: string = req.user.accessToken;
+        const email: string = req.user.email;
+        if (jwt) {
+            res.redirect(process.env.CLIENT_PORT + '/login/success?accessToken=' + jwt + '&email=' + email);
+        } else
             res.redirect(process.env.CLIENT_PORT + '/login/failure');
     }
 

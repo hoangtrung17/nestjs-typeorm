@@ -1,35 +1,30 @@
-import FacebookTokenStrategy from "passport-facebook-token";
-import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { UsersService } from '../users/users.service';
-import { use } from "passport";
-import * as dotenv from 'dotenv';
-dotenv.config();
+import { Inject } from '@nestjs/common';
+import FacebookTokenStrategy from 'passport-facebook-token';
+import { PassportStrategy} from '@nestjs/passport';
+import { AuthService, Provider } from './auth.service';
 
-@Injectable()
-export class FacebookStrategy {
+export class FacebookStrategy extends PassportStrategy(FacebookTokenStrategy, 'facebook-token') {
     constructor(
-        private readonly userService: UsersService,
+        @Inject(AuthService) private readonly authService: AuthService
     ) {
-        this.init();
-    }
-    init() {
-        use('facebook', new FacebookTokenStrategy({
+        super({
             clientID: process.env.FACEBOOK_APP_ID,
             clientSecret: process.env.FACEBOOK_APP_SECRET,
-            profileFields: ['id', 'name', 'displayName', 'emails', 'photos']
-        }, async (
-            accessToken: string,
-            refreshToken: string,
-            profile: any,
-            done: any,
-        ) => {
-            const user = await this.userService.findOrCreate(
-                profile
-            )
-            return done(null, user);
-        },
-        ));
+            callbackURL: 'http://localhost:8080/auth/facebook/callback',
+        })
+    }
+
+    async validate(accessToken: string, refreshToken: string, profile: any, done) {
+        // find or create user using authService
+        // return user or throw exception
+        const {emails } = profile
+        const user = {
+            email: emails[0].value,
+            // firstName: name.givenName,
+            // lastName: name.familyName,
+            // picture: photos[0].value,
+            accessToken
+        }
+        done(null, user);
     }
 }

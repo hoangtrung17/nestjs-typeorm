@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Delete, Param } from '@nestjs/common';
+import { Body, Controller, Get, Post, Delete, Param, Query} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './users.model';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -22,9 +22,14 @@ export class UsersController {
   //   return this.UsersService.findByGG();
   // }
 
-  @Get('/:id')
+  @Get('/profile/:id')
   async findById(@Param("id") id: string): Promise<User> {
     return this.UsersService.findOneById(id);
+  }
+
+  @Get('profile')
+  async getProfile(@Query() profile: {email: string, token: string}): Promise<User> {
+    return this.UsersService.findByParam(profile);
   }
 
   @Delete('/:id')

@@ -26,21 +26,30 @@ export class UsersService {
         return this.UserModel.findOne({ _id: id }).exec();
     }
 
+    async findByParam(param: any): Promise<User> {
+        return this.UserModel.findOne(param).exec();
+    }
+
     async deleteUser(userId: string) {
         return this.UserModel.deleteOne({ _id: userId }).exec();
     }
 
     async findOrCreate(_user): Promise<User> {
         const user = await this.UserModel
-            .findOne({ 'name': _user.email })
+            .findOne({ 'email': _user.email })
             .exec();
         if (user) {
             return user;
         }
-
-        const createdUser = new this.UserModel({
-            name: _user.emails[0].value
-        });
+        let savedata = {
+            name: _user.email,
+            email: _user.email,
+            password: _user.accessToken,
+            googleId: _user.googleId ? _user.googleId: null,
+            facbookId: _user.facbookId ? _user.facbookId: null,
+            token: _user.accessToken
+        };
+        const createdUser = new this.UserModel(savedata)
         return createdUser.save()
     }
 }
