@@ -46,7 +46,7 @@ export class UsersService {
             email: _user.email,
             password: _user.accessToken,
             googleId: _user.googleId ? _user.googleId: null,
-            facbookId: _user.facbookId ? _user.facbookId: null,
+            facebookId: _user.facebookId ? _user.facebookId: null,
             token: _user.accessToken
         };
         const createdUser = new this.UserModel(savedata)

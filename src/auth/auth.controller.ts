@@ -23,6 +23,19 @@ export class AuthController {
         // initiates the Google OAuth2 login flow
     }
 
+    @Get('facebook')
+    @UseGuards(AuthGuard('facebook-token'))
+    facebookLogin(@Req() req, @Res() res) {
+        // initiates the Google OAuth2 login flow
+        const jwt: string = req.user.accessToken;
+        const email: string = req.user.email;
+        if (jwt) {
+            this.UsersService.findOrCreate(req.user);
+            res.redirect(process.env.CLIENT_PORT + '/login/success?accessToken=' + jwt + '&email=' + email);
+        } else
+            res.redirect(process.env.CLIENT_PORT + '/login/failure');
+    }
+
     @Get('google/callback')
     @UseGuards(AuthGuard('google'))
     googleLoginCallback(@Req() req, @Res() res) {

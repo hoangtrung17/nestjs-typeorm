@@ -1,30 +1,38 @@
-import { Inject } from '@nestjs/common';
-import FacebookTokenStrategy from 'passport-facebook-token';
-import { PassportStrategy} from '@nestjs/passport';
-import { AuthService, Provider } from './auth.service';
+import { Injectable, Inject } from '@nestjs/common';
+import { use } from 'passport';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-export class FacebookStrategy extends PassportStrategy(FacebookTokenStrategy, 'facebook-token') {
-    constructor(
-        @Inject(AuthService) private readonly authService: AuthService
-    ) {
-        super({
-            clientID: process.env.FACEBOOK_APP_ID,
-            clientSecret: process.env.FACEBOOK_APP_SECRET,
-            callbackURL: 'http://localhost:8080/auth/facebook/callback',
-        })
+import * as FacebookTokenStrategy from 'passport-facebook-token';
+
+@Injectable()
+export class FacebookStrategy {
+    constructor() {
+        this.init();
     }
 
-    async validate(accessToken: string, refreshToken: string, profile: any, done) {
-        // find or create user using authService
-        // return user or throw exception
-        const {emails } = profile
-        const user = {
-            email: emails[0].value,
-            // firstName: name.givenName,
-            // lastName: name.familyName,
-            // picture: photos[0].value,
-            accessToken
-        }
-        done(null, user);
+    init() {
+        use(
+            new FacebookTokenStrategy(
+                {
+                    clientID: process.env.FACEBOOK_APP_ID,
+                    clientSecret: process.env.FACEBOOK_APP_SECRET,
+                    fbGraphVersion: 'v3.0',
+                    profileFields: ['id', 'name', 'displayName', 'emails', 'photos']
+                },
+                async (
+                    accessToken: string,
+                    refreshToken: string,
+                    profile: any,
+                    done: any,
+                ) => {
+                    const user = profile;
+                    user.accessToken = accessToken;
+                    user.email = profile.emails[0].value;
+                    user.facebookId = profile.id;
+                    return done(null, user);
+                },
+            ),
+        );
     }
 }
