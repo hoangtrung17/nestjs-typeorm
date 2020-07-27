@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, Delete, Param, Query} from '@nestjs/common';
+import { Body, Controller, Get, Post, Delete, Param, Query, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './users.model';
 import { CreateUserDto } from './dto/create-user.dto';
+import { RolesGuard } from '../auth/roles.guard';
 
 @Controller('Users')
 export class UsersController {
@@ -17,18 +18,14 @@ export class UsersController {
     return this.UsersService.findAll();
   }
 
-  // @Get('getUser')
-  // async findByGG(@Param("id") id: string,@Param("accessToken") accessToken: string): Promise<User[]> {
-  //   return this.UsersService.findByGG();
-  // }
-
   @Get('/profile/:id')
   async findById(@Param("id") id: string): Promise<User> {
     return this.UsersService.findOneById(id);
   }
 
   @Get('profile')
-  async getProfile(@Query() profile: {email: string, token: string}): Promise<User> {
+  // @UseGuards(RolesGuard)
+  async getProfile(@Query() profile: { email: string }): Promise<User> {
     return this.UsersService.findByParam(profile);
   }
 

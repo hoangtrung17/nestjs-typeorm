@@ -4,10 +4,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './users.model';
 import { CreateUserDto } from './dto/create-user.dto';
+import { RolesService } from '../roles/roles.service'
 import { decode, encode } from 'jwt-simple';
 @Injectable()
 export class UsersService {
-    constructor(@InjectModel('User') private readonly UserModel: Model<User>) { }
+
+    constructor(@InjectModel('User') private readonly UserModel: Model<User>, private readonly Role: RolesService) { }
 
     async create(createUserDto: CreateUserDto): Promise<any> {
         const createdUser = new this.UserModel(createUserDto);
@@ -41,14 +43,22 @@ export class UsersService {
         if (user) {
             return user;
         }
+        let _role = null;
+        if (_user.googleId || _user.facebookId) {
+            _role = await this.Role.findByParam({roleName: "student"}).then(doc => {
+                return doc._id
+            })
+        }
         let savedata = {
             name: _user.email,
             email: _user.email,
             password: _user.accessToken,
-            googleId: _user.googleId ? _user.googleId: null,
-            facebookId: _user.facebookId ? _user.facebookId: null,
-            token: _user.accessToken
+            googleId: _user.googleId ? _user.googleId : null,
+            facebookId: _user.facebookId ? _user.facebookId : null,
+            token: _user.accessToken,
+            role_id: _role
         };
+
         const createdUser = new this.UserModel(savedata)
         return createdUser.save()
     }

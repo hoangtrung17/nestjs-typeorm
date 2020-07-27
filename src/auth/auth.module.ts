@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { FacebookStrategy } from './facebook.strategy';
@@ -9,6 +9,8 @@ import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
+import { RolesGuard} from './roles.guard'
+@Global()
 @Module({
   imports: [
     UsersModule,
@@ -22,6 +24,7 @@ import { jwtConstants } from './constants';
   providers: [AuthService,
     LocalStrategy,
     FacebookStrategy,
+    RolesGuard,
     GoogleStrategy,
     JwtStrategy],
   exports: [AuthService]
