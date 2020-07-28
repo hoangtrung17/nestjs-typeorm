@@ -24,9 +24,9 @@ export class UsersController {
   }
 
   @Get('profile')
-  // @UseGuards(RolesGuard)
-  async getProfile(@Query() profile: { email: string }): Promise<User> {
-    return this.UsersService.findByParam(profile);
+  @UseGuards(RolesGuard)
+  async getProfile(@Query() profile: { access_token : string }): Promise<User> {
+    return this.UsersService.findByParam({token: profile.access_token});
   }
 
   @Delete('/:id')

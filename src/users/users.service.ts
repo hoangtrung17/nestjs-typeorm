@@ -28,7 +28,7 @@ export class UsersService {
         return this.UserModel.findOne({ _id: id }).exec();
     }
 
-    async findByParam(param: any): Promise<User> {
+    async findByParam(param: any): Promise<any> {
         return this.UserModel.findOne(param).exec();
     }
 
