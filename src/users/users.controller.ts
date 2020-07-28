@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { RolesGuard } from '../auth/roles.guard';
 
 @Controller('Users')
+@UseGuards(RolesGuard)
 export class UsersController {
   constructor(private readonly UsersService: UsersService) { }
 
@@ -24,7 +25,6 @@ export class UsersController {
   }
 
   @Get('profile')
-  @UseGuards(RolesGuard)
   async getProfile(@Query() profile: { access_token : string }): Promise<User> {
     return this.UsersService.findByParam({token: profile.access_token});
   }
